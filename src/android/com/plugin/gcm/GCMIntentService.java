@@ -5,7 +5,7 @@ import java.util.List;
 import com.google.android.gcm.GCMBaseIntentService;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import com.plugin.GCM.*;
 import android.annotation.SuppressLint;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
@@ -105,7 +105,10 @@ public class GCMIntentService extends GCMBaseIntentService {
 		} else {
 			mBuilder.setContentText("<missing message content>");
 		}
-
+		String title = extras.getString("title");
+		if (title != null) {
+			mBuilder.setContentTitle(title);
+		}
 		String msgcnt = extras.getString("msgcnt");
 		if (msgcnt != null) {
 			mBuilder.setNumber(Integer.parseInt(msgcnt));
