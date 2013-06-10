@@ -142,7 +142,7 @@ In this example, be sure and substitute your own senderID. Get your senderID by 
 	if (device.platform == 'android' || device.platform == 'Android') {
 		pushNotification.register(successHandler, errorHandler,{"senderID":"replace_with_sender_id","ecb":"onNotificationGCM"});
 	} else {
-		pushNotification.register(tokenHandler, errorHandler {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
+		pushNotification.register(tokenHandler, errorHandler, {"badge":"true","sound":"true","alert":"true","ecb":"onNotificationAPN"});
 	}
 
 **successHandler** - called when a plugin method returns without error
@@ -246,6 +246,15 @@ You will typically call this when your app is exiting, to cleanup any used resou
 
 	pushNotification.unregister(successHandler, errorHandler);
 	
+#### settings (android only)
+Currently the only setting is for notification sounds:
+	
+	pushNotification.settings(successHandler, errorHandler, {"sound":"true"});
+	
+The sound is on (true) by default. Use the settings function to set sound to false.
+
+
+
 You'll probably want to trap on the **backbutton** event and only call this when the home page is showing. Remember, the back button on android is not the same as the Home button. When you hit the back button from the home page, your activity gets dismissed. Here is an example of how to trap the backbutton event;
 
 	function onDeviceReady() {
