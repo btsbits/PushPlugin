@@ -24,7 +24,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 
 	public static final int NOTIFICATION_ID = 237;
 	private static final String TAG = "GCMIntentService";
-	
+
 	public GCMIntentService() {
 		super("GCMIntentService");
 	}
@@ -88,9 +88,9 @@ public class GCMIntentService extends GCMBaseIntentService {
 		notificationIntent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP | Intent.FLAG_ACTIVITY_CLEAR_TOP);
 		notificationIntent.putExtra("pushBundle", extras);
 
-		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);		
+		PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-		NotificationCompat.Builder mBuilder = 
+		NotificationCompat.Builder mBuilder =
 			new NotificationCompat.Builder(context)
 				.setSmallIcon(context.getApplicationInfo().icon)
 				.setWhen(System.currentTimeMillis())
@@ -104,9 +104,15 @@ public class GCMIntentService extends GCMBaseIntentService {
 		} else {
 			mBuilder.setContentText("<missing message content>");
 		}
-		String title = extras.getString("title");
-		if (title != null) {
-			mBuilder.setContentTitle(title);
+		String settimeString = extras.getString("settime");
+
+		if (settimeString != null) {
+			Long settime = Long.parseLong(settimeString,10);
+			mBuilder.setWhen(settime);
+		}
+		String setticker = extras.getString("setticker");
+		if (setticker != null) {
+			mBuilder.setTicker(setticker);
 		}
 		String msgcnt = extras.getString("msgcnt");
 		if (msgcnt != null) {
@@ -114,37 +120,39 @@ public class GCMIntentService extends GCMBaseIntentService {
 		}
 
 		mNotificationManager.notify((String) appName, NOTIFICATION_ID, mBuilder.build());
-		tryPlayRingtone();
+		if (PushPlugin.SoundOn){
+			tryPlayRingtone();
+		}
 	}
 
-	private void tryPlayRingtone() 
+	private void tryPlayRingtone()
 	{
 		try {
 			Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
 			Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
 			r.play();
-		} 
+		}
 		catch (Exception e) {
 			Log.e(TAG, "failed to play notification ringtone");
 		}
 	}
-	
+
 	public static void cancelNotification(Context context)
 	{
 		NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		mNotificationManager.cancel((String)getAppName(context), NOTIFICATION_ID);	
+		mNotificationManager.cancel((String)getAppName(context), NOTIFICATION_ID);
 	}
-	
+
 	private static String getAppName(Context context)
 	{
-		CharSequence appName = 
+		CharSequence appName =
 				context
 					.getPackageManager()
 					.getApplicationLabel(context.getApplicationInfo());
-		
+
 		return (String)appName;
 	}
-	
+
 	public boolean isInForeground()
 	{
 		ActivityManager activityManager = (ActivityManager) getApplicationContext().getSystemService(Context.ACTIVITY_SERVICE);
@@ -155,7 +163,7 @@ public class GCMIntentService extends GCMBaseIntentService {
 			return true;
 
 		return false;
-	}	
+	}
 
 	@Override
 	public void onError(Context context, String errorId) {
