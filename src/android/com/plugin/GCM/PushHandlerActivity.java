@@ -1,4 +1,6 @@
-package com.plugin.gcm;
+package com.plugin.GCM;
+
+import com.plugin.gcm.GCMIntentService;
 
 import android.app.Activity;
 import android.content.Intent;
